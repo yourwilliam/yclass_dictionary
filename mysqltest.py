@@ -2,8 +2,8 @@ import MySQLdb
 
 conn = MySQLdb.connect(
     host="121.41.8.92",
-    user="*******123",
-    passwd="********123",
+    user="*******12",
+    passwd="********12",
     db="youyudic",
     port=3306)
 
