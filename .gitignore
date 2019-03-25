@@ -106,3 +106,4 @@ venv.bak/
 .mypy_cache/
 
 .idea/
+/mysqlclient-1.4.2-cp37-cp37m-win32.whl
