@@ -1,21 +1,24 @@
 #!/usr/bin/python3.7.2
 # -*- coding: utf-8 -*-
-# @Time   : 2019/3/25 10:37
+# @Time   : 2019/3/25 22:53
 # @Author : william
 # @Desc : ==============================================
-# 数据库工具
-# 整理数据库相关功能，数据库读、写查询功能
-# 通过connection_db连接数据库
+# 有鱼英语项目                                         
+# 1. 从主库中取出相应的外键字段
+# 2. 将词频写入数据库，写入的时候需要指定数据库表名，如果数据库表不存在，则创建数据库表。如果存在则清空数据库表。
+# TODO 从主辞典中找到单词的外键，连接到当前词频分析表
 # ======================================================
 # @Project : yclass_dictionary
-# @FileName: freq_console.py
+# @FileName: dbutil.py
 # @web: http://www.yuketang.net
 import MySQLdb
 
 conn = None
 cur = None
-# TODO 使用单子模式构建数据库连接
 
+
+# TODO 使用单子模式构建数据库连接
+# TODO 数据库连接关闭
 # 连接数据库
 def connection_db(username, password, host="121.41.8.92", port=3306, db="youyudic"):
     """
@@ -44,22 +47,34 @@ def connection_db(username, password, host="121.41.8.92", port=3306, db="youyudi
     cur = conn.cursor()
 
 
-# 批量插入executemany
-def insert_by_many(dics):
+def create_tables(table_name):
     """
-    将dics中的内容批量的写入数据库中
+    判断数据库表是否存在，如果存在，则清空该表，然后添加。
+    如果不存在，则创建表。
     Args:
-        dics: 字典类型，需要写入数据库的相关内容
+        table_name: 数据库表名
 
-    Returns:
+    Returns: 无返回
 
     """
-    param = []
-    for word_key, word_value in dics.items():
-        param.append([word_value.get("word_name"), str(word_value.get("exchanges")),
-                      str(word_value.get("symbols")[0].get("parts"))])
+    cur.execute(f"DROP TABLE IF EXISTS {table_name}")
+    sql = f"CREATE TABLE {table_name} (word  CHAR(255) NOT NULL,freq  INT )"
+    cur.execute(sql)
+
+# TODO 插入词频的时候增加字段，第三个字段记录为从主字典中查询的单词id写入当前字段中。
+def insert_word_freq(table_name, dics):
+    """
+    将词频字典批量插入数据库
+    Args:
+        table_name: 数据库表名
+        dics: 词频字典值 {"单词","词频"}
+
+    Returns: 无
+
+    """
+    param = [[word, word_freq] for word, word_freq in dics.items()]
     try:
-        sql = 'INSERT INTO dictest values(%s,%s,%s)'
+        sql = f"INSERT INTO {table_name} values(%s,%s)"
         # 批量插入
         cur.executemany(sql, param)
         conn.commit()

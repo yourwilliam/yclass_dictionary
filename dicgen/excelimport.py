@@ -7,7 +7,7 @@
 # 导入excel辞典到本地，读取excel数据
 # ======================================================
 # @Project : yclass_dictionary
-# @FileName: console.py
+# @FileName: freq_console.py
 # @web: http://www.yuketang.net
 import pandas as pd
 import numpy as np

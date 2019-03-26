@@ -8,7 +8,7 @@
 # 已绑定金山词霸接口
 # ======================================================
 # @Project : yclass_dictionary
-# @FileName: console.py
+# @FileName: freq_console.py
 # @web: http://www.yuketang.net
 import requests
 import time

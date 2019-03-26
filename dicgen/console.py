@@ -8,7 +8,7 @@
 # 控制台集成click进行参数绑定，结合excel工具、API工具和数据库工具管理整体流程
 # ======================================================
 # @Project : yclass_dictionary
-# @FileName: console.py
+# @FileName: freq_console.py
 # @web: http://www.yuketang.net
 from dicgen import dicapi
 from dicgen import excelimport
