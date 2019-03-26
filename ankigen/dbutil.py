@@ -1,14 +1,13 @@
 #!/usr/bin/python3.7.2
 # -*- coding: utf-8 -*-
-# @Time   : 2019/3/25 10:37
+# @Time   : 2019/3/26 11:34
 # @Author : william
 # @Desc : ==============================================
 # 数据库工具
-# 整理数据库相关功能，数据库读、写查询功能
-# 通过connection_db连接数据库
+# TODO 根据词频查询高频单词导入ANKI
 # ======================================================
 # @Project : yclass_dictionary
-# @FileName: freq_console.py
+# @FileName: dbutil.py
 # @web: http://www.yuketang.net
 import MySQLdb
 
@@ -46,31 +45,23 @@ def connection_db(username, password, host="121.41.8.92", port=3306, db="youyudi
     cur = conn.cursor()
 
 
-# 批量插入executemany
-def insert_by_many(dics):
+def select_words(table_name):
     """
-    将dics中的内容批量的写入数据库中
+    从指定的字典表中获取字典数据
     Args:
-        dics: 字典类型，需要写入数据库的相关内容
+        table_name: 字典数据库的表名
 
     Returns:
+        list类型的数据库信息
 
     """
-    param = []
-    for word_key, word_value in dics.items():
-        # 翻译转换成人能看懂的
-        trans = ""
-        parts = word_value.get("symbols")[0].get("parts")
-        for part in parts:
-            trans += part.get("part") + " " + str(part.get("means"))
-        param.append([word_value.get("word_name"), str(word_value.get("exchanges")),
-                      trans])
+    sql = f"select * from {table_name}"
+    words = []
     try:
-        sql = 'INSERT INTO dictest values(%s,%s,%s)'
-        # 批量插入
-        cur.executemany(sql, param)
-        conn.commit()
+        cur.execute(sql)
+        results = cur.fetchall()
+        words = [[row[0], row[2]] for row in results]
     except Exception as e:
         print(e)
-        conn.rollback()
-    print('[insert_by_many executemany] total:')
+        print("Error: unable to fecth data")
+    return words
